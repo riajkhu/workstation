@@ -1,8 +1,8 @@
 #!/bin/sh
 
-/sbin/insmod <%= @install_path %>/openvswitch/datapath/linux/openvswitch.ko
+/sbin/insmod <%= node[:openvswitch][:install_dir] %>/openvswitch/datapath/linux/openvswitch.ko
 
-/usr/local/sbin/ovsdb-server /usr/local/etc/openvswitch/conf.db \
+/usr/local/sbin/ovsdb-server <%= node[:openvswitch][:conf_dir] %>/conf.db \
 --remote=punix:/usr/local/var/run/openvswitch/db.sock \
 --remote=db:Open_vSwitch,manager_options \
 --private-key=db:SSL,private_key \

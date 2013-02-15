@@ -1,12 +1,3 @@
-# modify /etc/init/failsafe.conf to shorten boot time
-# echo "127.0.0.1 `hostname`" >> /etc/hosts
-# ovs-vsctl add-br br1 # tunnel in this bridge
-# /etc/init.d/networking restart
-# route add default gw <10.1.56.1> eth0
-# ovs-vsctl add-port br1 tun1 -- set interface tun1 \
-#    type=vxlan options:remote_ip=<192.168.1.110> \ 
-#    options:key=flow
-
 package "git" 
 package "build-essential"
 package "automake"
@@ -18,28 +9,38 @@ package "python-twisted-conch"
 package "uml-utilities"
 package "libtool"
 package "pkg-config"
-package "linux-headers-#{`uname -r`}"
+package "linux-headers-generic"
 
-if not File.exists?("/etc/init.d/openvswitchd")
+directory node[:openvswitch][:install_dir] do
+  owner "root"
+  group "root"
+  mode 0755
+end
+
+directory node[:openvswitch][:conf_dir] do
+  owner "root"
+  group "root"
+  mode 0755
+end
+
+if not File.exists?(node[:openvswitch][:init_file])
   bash "install openswitch from code" do
     user "root"
-    cwd node[:openvswitch][:install_path]
+    cwd node[:openvswitch][:install_dir]
     code <<-EOH
     git clone git://openvswitch.org/openvswitch
     cd openvswitch
     git checkout #{node[:openvswitch][:code_version]}
     ./boot.sh
     ./configure --with-linux=/lib/modules/`uname -r`/build
-    make -j
+    make
     make install
-    touch /usr/local/etc/ovs-vswitchd.conf
-    mkdir -p /usr/local/etc/openvswitch
-    ovsdb-tool create /usr/local/etc/openvswitch/conf.db vswitchd/vswitch.ovsschema
+    ovsdb-tool create #{node[:openvswitch][:conf_dir]}/conf.db vswitchd/vswitch.ovsschema
     EOH
   end
 end
 
-template "/etc/init.d/openvswitchd" do
+template node[:openvswitch][:init_file] do
   source "openvswitchd.erb"
   owner "root"
   group "root"
