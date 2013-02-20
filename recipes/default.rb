@@ -41,7 +41,7 @@ if not File.exists?(node[:openvswitch][:init_file])
 end
 
 template node[:openvswitch][:init_file] do
-  source "openvswitchd.erb"
+  source "openvswitch.conf.erb"
   owner "root"
   group "root"
   mode 00755
@@ -50,6 +50,6 @@ template node[:openvswitch][:init_file] do
            )
 end
 
-service "openvswitchd" do
+service "openvswitch" do
   action [:enable, :start]
 end
