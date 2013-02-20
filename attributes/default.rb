@@ -4,5 +4,5 @@ default[:openvswitch][:code_version] =  \
 default[:openvswitch][:conf_dir] = '/etc/openvswitch'
 default[:openvswitch][:init_file] = '/etc/init/openvswitch.conf'
 
-default[:openvswitch][:vxlan][:br1] = ['10.1.56.42', '10.1.56.45']
-default[:openvswitch][:vxlan][:br2] = ['10.1.56.55', ]
+#default[:openvswitch][:vxlan][:br1] = ['10.1.56.42', '10.1.56.45']
+#default[:openvswitch][:vxlan][:br2] = ['10.1.56.55']
