@@ -23,12 +23,6 @@ directory node[:openvswitch][:conf_dir] do
   mode 0755
 end
 
-directory node[:openvswitch][:pid_dir] do
-  owner "root"
-  group "root"
-  mode 0755
-end
-
 if not File.exists?(node[:openvswitch][:init_file])
   bash "install openswitch from code" do
     user "root"

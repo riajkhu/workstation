@@ -12,6 +12,7 @@ expect fork
 
 pre-start script
   /sbin/insmod <%= node[:openvswitch][:install_dir] %>/openvswitch/datapath/linux/openvswitch.ko
+  mkdir -p <%= node[:openvswitch][:pid_dir] %>/
 end script
 
 script
