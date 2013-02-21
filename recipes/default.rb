@@ -23,6 +23,12 @@ directory node[:openvswitch][:conf_dir] do
   mode 0755
 end
 
+directory node[:openvswitch][:pid_dir] do
+  owner "root"
+  group "root"
+  mode 0755
+end
+
 if not File.exists?(node[:openvswitch][:init_file])
   bash "install openswitch from code" do
     user "root"
@@ -32,10 +38,12 @@ if not File.exists?(node[:openvswitch][:init_file])
     cd openvswitch
     git checkout #{node[:openvswitch][:code_version]}
     ./boot.sh
-    ./configure --with-linux=/lib/modules/`uname -r`/build
+    ./configure --with-linux=/lib/modules/`uname -r`/build \
+      --prefix=/usr --localstatedir=/var # default to these libraries
     make
     make install
-    ovsdb-tool create #{node[:openvswitch][:conf_dir]}/conf.db vswitchd/vswitch.ovsschema
+    ovsdb-tool create #{node[:openvswitch][:conf_dir]}/conf.db \
+      vswitchd/vswitch.ovsschema
     EOH
   end
 end

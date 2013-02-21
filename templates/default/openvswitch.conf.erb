@@ -15,8 +15,8 @@ pre-start script
 end script
 
 script
-  exec /usr/local/sbin/ovsdb-server <%= node[:openvswitch][:conf_dir] %>/conf.db \
-        --remote=punix:/usr/local/var/run/openvswitch/db.sock \
+  exec /usr/sbin/ovsdb-server <%= node[:openvswitch][:conf_dir] %>/conf.db \
+        --remote=punix:<%= node[:openvswitch][:pid_dir] %>/db.sock \
         --remote=db:Open_vSwitch,manager_options \
         --private-key=db:SSL,private_key \
         --certificate=db:SSL,certificate \
@@ -26,7 +26,7 @@ end script
 # seems main script only allows one daemon, so we move another
 # daemon(s) to post-start and pre-stop
 post-start script 
-  exec /usr/local/sbin/ovs-vswitchd --pidfile --detach
+  exec /usr/sbin/ovs-vswitchd --pidfile --detach
 end script
 
 pre-stop script
