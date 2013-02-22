@@ -8,7 +8,7 @@ node[:openvswitch][:vxlan].each do |br, remote_ips|
     user "root"
     code <<-EOH
       # create if not exist, idempotence
-      if ! echo `ovs-vsctl list-br` | egrep -q #{br}; then
+      if ! ovs-vsctl list-br | egrep -q #{br}; then
         ovs-vsctl add-br #{br}
       fi
     EOH
@@ -20,7 +20,7 @@ node[:openvswitch][:vxlan].each do |br, remote_ips|
       user "root"
       code <<-EOH
         # create if not exist, idempotence
-        if ! echo `ovs-vsctl list-ports #{br}` | egrep -q "#{tunnel_id}"; then
+        if ! ovs-vsctl list-ports #{br} | egrep -q #{tunnel_id}; then
           ovs-vsctl add-port #{br} #{tunnel_id} \
             -- set interface #{tunnel_id} type=vxlan \
             options:remote_ip=#{remote_ip} # options:key=flow    
