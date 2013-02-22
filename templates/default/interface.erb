@@ -1,0 +1,12 @@
+# interface <%= @eth_name %>: auto configured by chef openvswitch cookbook
+auto <%= @eth_name %>
+iface <%= @eth_name %> inet manual
+      pre-up ip link add <%= @eth_name %> type veth peer name <%= @eth_peer_name %> || true
+      pre-up ip link set <%= @eth_name %> promisc on
+      pre-up ip link set <%= @eth_peer_name %> promisc on
+      # do NOT set ovs since it's not started yet.
+      #pre-up ovs-vsctl --may-exist add-port <%= @bridge_name %> <%= @eth_peer_name %>
+      up ip link set <%= @eth_name %> up
+      up ip link set <%= @eth_peer_name %> up
+      down ip link set <%= @eth_name %> down
+      down ip link set <%= @eth_peer_name %> down
