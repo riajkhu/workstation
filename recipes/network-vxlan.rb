@@ -52,7 +52,7 @@ node["openvswitch"]["vxlan_bridges"].each do |bridge_name|
   bash "make sure the inside port is in ovs" do
     code <<-EOH
       ifup #{eth_name} || true
-      # ovs will remember this across reboot
+      # ovs will remember this after reboot, so we need --may-exist
       ovs-vsctl --may-exist add-port #{bridge_name} #{eth_peer_name}
     EOH
   end
