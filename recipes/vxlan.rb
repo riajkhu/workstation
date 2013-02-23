@@ -8,7 +8,7 @@ node[:openvswitch][:vxlan].each do |br, remote_ips|
     user "root"
     code <<-EOH
       # create if not exist, idempotence
-      if ! ovs-vsctl list-br | egrep -q #{br}; then
+      if ! ovs-vsctl list-br | egrep -q ^#{br}$; then
         ovs-vsctl add-br #{br}
       fi
     EOH
