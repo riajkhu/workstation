@@ -30,7 +30,7 @@ include_recipe "openvswitch::vxlan"
 
 node["openvswitch"]["vxlan_bridges"].each do |bridge_name|
   eth_name = "eth#{bridge_name}"
-  eth_peer_name = "#{eth_name}in" # can't be too long
+  eth_peer_name = "#{eth_name}p"
   template "/etc/network/interface.#{eth_name}" do
     source "interface.erb"
     owner "root"
@@ -56,6 +56,4 @@ node["openvswitch"]["vxlan_bridges"].each do |bridge_name|
       ovs-vsctl --may-exist add-port #{bridge_name} #{eth_peer_name}
     EOH
   end
-
 end
-
