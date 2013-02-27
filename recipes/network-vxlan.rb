@@ -1,7 +1,7 @@
 # setup a vxlan network between all nodes in the environment
 # in a hub and spoke topology
 
-# must specify node["openvswitch"]["hub_name"] and node["openvswitch"]["vxlan_bridges"]
+# must specify node["openvswitch"]["hub_name"] and node["openvswitch"]["vxlan_bridge_ids"]
 hub = node["openvswitch"]["hub_name"]
 remote_nodes = []
 if node.name == hub then
@@ -22,15 +22,16 @@ end
 
 remote_ips = remote_nodes.map{|n| n["ipaddress"]}
 
-node["openvswitch"]["vxlan_bridges"].each do |bridge_name|
-  node.default["openvswitch"]["vxlan"][bridge_name] = remote_ips
+node["openvswitch"]["vxlan_bridge_ids"].each do |bridge_id|
+  node.default["openvswitch"]["vxlan"][bridge_id] = remote_ips
 end
 
 include_recipe "openvswitch::vxlan"
 
-node["openvswitch"]["vxlan_bridges"].each do |bridge_name|
-  eth_name = "eth#{bridge_name}"
-  eth_peer_name = "#{eth_name}p"
+node["openvswitch"]["vxlan_bridge_ids"].each do |bridge_id|
+  bridge_name = 'obr' + bridge_id # obr: Openvswitch BRidge
+  eth_name = 'eth' + bridge_id
+  eth_peer_name = eth_name + "p"
   template "/etc/network/interface.#{eth_name}" do
     source "interface.erb"
     owner "root"
@@ -43,10 +44,13 @@ node["openvswitch"]["vxlan_bridges"].each do |bridge_name|
               )
   end
   bash "install and start interface" do
+    user "root"
+    # not_if "grep #{eth_name} /etc/network/interfaces" # not work properly
     code <<-EOH
-      cat /etc/network/interface.#{eth_name} >> /etc/network/interfaces
+      if ! grep #{eth_name} /etc/network/interfaces; then
+        cat /etc/network/interface.#{eth_name} >> /etc/network/interfaces
+      fi
     EOH
-    not_if "grep #{eth_name} /etc/network/interfaces"
   end
   
   bash "make sure the inside port is in ovs" do
