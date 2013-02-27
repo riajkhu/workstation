@@ -5,7 +5,7 @@
 # default[:openvswitch][:vxlan][:101] = ['10.1.56.55']
 
 node[:openvswitch][:vxlan].each do |bridge_id, remote_ips|
-  bridge_name = 'obr' + bridge_id # obr: Openvswitch BRidge
+  bridge_name = 'obr' + bridge_id.to_s # obr: Openvswitch BRidge
   bash "create bridge" do
     user "root"
     code <<-EOH
