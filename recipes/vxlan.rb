@@ -9,10 +9,9 @@ node[:openvswitch][:vxlan].each do |bridge_id, remote_ips|
   bash "create bridge" do
     user "root"
     code <<-EOH
-      # create if not exist, idempotence
-      if ! ovs-vsctl list-br | egrep -q ^#{bridge_name}$; then
-        ovs-vsctl add-br #{bridge_name}
-      fi
+      # Not exist: 1st time; Exist: afterwards
+      ovs-vsctl --may-exist add-br #{bridge_name}
+      ovs-vsctl set Bridge #{bridge_name} stp_enable=true
     EOH
   end
 
@@ -23,12 +22,10 @@ node[:openvswitch][:vxlan].each do |bridge_id, remote_ips|
     bash "create tunnel" do
       user "root"
       code <<-EOH
-        # create if not exist, idempotence
-        if ! ovs-vsctl list-ports #{bridge_name} | egrep -q ^#{tunnel_name}$; then
-          ovs-vsctl add-port #{bridge_name} #{tunnel_name} \
-            -- set interface #{tunnel_name} type=vxlan \
-            options:remote_ip=#{remote_ip} options:key=#{bridge_id}
-        fi
+        # Not exist: 1st time; Exist: afterwards
+        ovs-vsctl --may-exist add-port #{bridge_name} #{tunnel_name} \
+          -- set interface #{tunnel_name} type=vxlan \
+          options:remote_ip=#{remote_ip} options:key=#{bridge_id}
       EOH
     end
   end
