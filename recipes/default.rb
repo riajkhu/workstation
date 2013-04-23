@@ -43,7 +43,7 @@ template "/etc/init.d/openvswitchd" do
   source "openvswitchd.erb"
   owner "root"
   group "root"
-  mode 755
+  mode "755"
   variable(
            :install_path => node[:openvswitch][:install_path]
            )
