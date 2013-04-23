@@ -1,3 +1,4 @@
+name             "openvswitch"
 maintainer       "Changbin Liu"
 maintainer_email "changbin.liu@gmail.com"
 license          "All rights reserved"
