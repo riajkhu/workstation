@@ -5,6 +5,10 @@
 set -e
 
 COOKBOOK=$(awk '/^name/ {print $NF}' metadata.rb |tr -d \"\')
+if [ -z $COOKBOOK ]; then
+    echo "Cookbook name not defined in metadata.rb"
+    exit 1
+fi
 
 BUNDLE_PATH=${BUNDLE_PATH:-.bundle}
 
