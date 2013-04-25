@@ -11,8 +11,9 @@ if [ -z $COOKBOOK ]; then
 fi
 
 BUNDLE_PATH=${BUNDLE_PATH:-.bundle}
+BERKSHELF_PATH=${BERKSHELF_PATH:-.cookbooks}
 
 bundle install --path=${BUNDLE_PATH}
-bundle exec berks install --path .cookbooks
-bundle exec foodcritic -f any -t ~FC003 -t ~FC023 .cookbooks/${COOKBOOK}
-bundle exec rspec .cookbooks/${COOKBOOK}
+bundle exec berks install --path=${BERKSHELF_PATH}
+bundle exec foodcritic -f any -t ~FC003 -t ~FC023 ${BERKSHELF_PATH}/${COOKBOOK}
+bundle exec rspec ${BERKSHELF_PATH}/${COOKBOOK}
