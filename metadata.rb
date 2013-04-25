@@ -1,6 +1,6 @@
 name             "openvswitch"
-maintainer       "Changbin Liu"
-maintainer_email "changbin.liu@gmail.com"
+maintainer       "AT&T Services, Inc."
+maintainer_email "cookbooks@lists.tfoundry.com"
 license          "All rights reserved"
 description      "Installs/Configures openvswitch"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
