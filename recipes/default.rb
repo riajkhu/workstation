@@ -11,7 +11,7 @@ package "libtool"
 package "pkg-config"
 package "linux-headers-generic"
 
-directory node[:openvswitch][:install_dir] do
+directory node[:openvswitch][:install_path] do
   owner "root"
   group "root"
   mode 0755
@@ -26,7 +26,7 @@ end
 if not File.exists?(node[:openvswitch][:init_file])
   bash "install openswitch from code" do
     user "root"
-    cwd node[:openvswitch][:install_dir]
+    cwd node[:openvswitch][:install_path]
     code <<-EOH
     git clone git://openvswitch.org/openvswitch
     cd openvswitch
@@ -47,9 +47,6 @@ template node[:openvswitch][:init_file] do
   owner "root"
   group "root"
   mode 00755
-  variable(
-           :install_path => node[:openvswitch][:install_path]
-           )
 end
 
 service "openvswitch" do
