@@ -1,8 +1,8 @@
 # setup vxlan according to given/queried bridge and interface info
 # bridge_id: integer, up to 16 million
 # e.g.,
-# default[:openvswitch][:vxlan][:100] = ['10.1.56.42', '10.1.56.45'] 
-# default[:openvswitch][:vxlan][:101] = ['10.1.56.55']
+# node[:openvswitch][:vxlan][:100] = ['10.1.56.42', '10.1.56.45']
+# node[:openvswitch][:vxlan][:101] = ['10.1.56.55']
 
 node[:openvswitch][:vxlan].each do |bridge_id, remote_ips|
   bridge_name = 'obr' + bridge_id.to_s # obr: Openvswitch BRidge
