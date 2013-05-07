@@ -1,0 +1,36 @@
+start on (filesystem and net-device-up)
+stop on runlevel [016]
+
+# Automatically restart process if crashed
+respawn
+
+# Essentially lets upstart know the process will detach itself to the background
+expect fork
+
+pre-start script
+  /sbin/insmod <%= node[:openvswitch][:install_dir] %>/openvswitch/datapath/linux/openvswitch.ko
+  mkdir -p <%= node[:openvswitch][:pid_dir] %>/
+end script
+
+script
+  exec /usr/sbin/ovsdb-server <%= node[:openvswitch][:conf_dir] %>/conf.db \
+        --remote=punix:<%= node[:openvswitch][:pid_dir] %>/db.sock \
+        --remote=db:Open_vSwitch,manager_options \
+        --private-key=db:SSL,private_key \
+        --certificate=db:SSL,certificate \
+        --bootstrap-ca-cert=db:SSL,ca_cert --pidfile --detach --log-file
+end script
+
+# seems main script only allows one daemon, so we move another
+# daemon(s) to post-start and pre-stop
+post-start script 
+  exec /usr/sbin/ovs-vswitchd --pidfile --detach
+end script
+
+pre-stop script
+  exec killall -9 ovs-vswitchd
+end script
+
+post-stop script
+  /sbin/rmmod openvswitch
+end script
