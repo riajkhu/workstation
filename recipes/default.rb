@@ -34,7 +34,7 @@ if not File.exists?(node[:openvswitch][:init_file])
     ./boot.sh
     ./configure --with-linux=/lib/modules/`uname -r`/build \
       --prefix=/usr --localstatedir=/var # default to these libraries
-    make
+    make -j
     make install
     ovsdb-tool create #{node[:openvswitch][:conf_dir]}/conf.db \
       vswitchd/vswitch.ovsschema
