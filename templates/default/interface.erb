@@ -1,7 +1,9 @@
 
 # interface <%= @eth_name %>: auto configured by chef openvswitch cookbook
 auto <%= @eth_name %>
-iface <%= @eth_name %> inet manual
+iface <%= @eth_name %> inet static
+      address <%= @address %>
+      netmask <%= @netmask %>
       pre-up ip link add <%= @eth_name %> type veth peer name <%= @eth_peer_name %> || true
       pre-up ip link set <%= @eth_name %> promisc on
       pre-up ip link set <%= @eth_name %> mtu <%= node[:openvswitch][:mtu] %>

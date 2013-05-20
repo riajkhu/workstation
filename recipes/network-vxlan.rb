@@ -28,10 +28,14 @@ end
 
 include_recipe "openvswitch::vxlan"
 
+seq = 0
 node[:openvswitch][:vxlan_bridge_ids].each do |bridge_id|
   bridge_name = 'obr' + bridge_id.to_s # obr: Openvswitch BRidge
   eth_name = 'eth' + bridge_id.to_s
   eth_peer_name = eth_name + "p"
+  netmask = node[:openvswitch][:netmask]
+  address = node[:openvswitch][:addresses][node.name][seq]
+  seq += 1
   template "/etc/network/interface.#{eth_name}" do
     source "interface.erb"
     owner "root"
@@ -40,7 +44,9 @@ node[:openvswitch][:vxlan_bridge_ids].each do |bridge_id|
     variables(
               :bridge_name => bridge_name,
               :eth_name => eth_name,
-              :eth_peer_name => eth_peer_name
+              :eth_peer_name => eth_peer_name,
+              :address => address,
+              :netmask => netmask
               )
   end
   bash "install and start interface" do
