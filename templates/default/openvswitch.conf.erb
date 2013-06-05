@@ -23,7 +23,7 @@ end script
 
 # seems main script only allows one daemon, so we move another
 # daemon(s) to post-start and pre-stop
-post-start script 
+post-start script
   exec /usr/sbin/ovs-vswitchd --pidfile --detach
 end script
 
