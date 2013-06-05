@@ -1,15 +1,12 @@
-package "git" 
 package "build-essential"
-package "automake"
+package "git"
 package "autoconf"
-package "gcc"
 package "python-simplejson"
 package "python-qt4"
 package "python-twisted-conch"
 package "uml-utilities"
 package "libtool"
 package "pkg-config"
-package "linux-headers-generic"
 
 directory node[:openvswitch][:install_dir] do
   owner "root"
