@@ -4,17 +4,8 @@ hub_address = node[:openvswitch][:addresses][hub][0]  # 0: eth1 ops n/w
 
 # I am the hub, do the following
 if node.name == hub then
-  # install and config dnsmasq
+  # install dnsmasq
   package "dnsmasq"
-  template "/etc/dnsmasq.conf" do
-    source "dnsmasq.conf.erb"
-    owner "root"
-    group "root"
-    mode 00644
-    variables(
-              :hub_address => hub_address
-              )  
-  end
   # create /etc/hosts from each node
   query = "chef_environment:#{node.chef_environment}"
   nodes, _, _ = ::Chef::Search::Query.new.search :node, query
@@ -46,21 +37,22 @@ if node.name == hub then
     supports :status => true, :start => true, :stop => true
     action [:restart]
   end
-end
 
-# Everybody points to the hub as nameserver
-template '/etc/resolv.conf' do
-  source "resolv.conf.erb"
-  owner "root"
-  group "root"
-  mode 00644
-  variables(
-            :hub_address => hub_address
-            )  
-end
-bash "freeze resolv.conf" do
-  user "root"
-  code <<-EOH
+# Everybody else points to the hub as nameserver
+else
+  template '/etc/resolv.conf' do
+    source "resolv.conf.erb"
+    owner "root"
+    group "root"
+    mode 00644
+    variables(
+              :hub_address => hub_address
+              )  
+  end
+  bash "freeze resolv.conf" do
+    user "root"
+    code <<-EOH
       chattr +i /etc/resolv.conf
     EOH
+  end  
 end
