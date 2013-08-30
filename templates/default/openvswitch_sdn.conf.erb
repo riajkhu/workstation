@@ -9,12 +9,13 @@ end script
 
 script
   exec <%= node[:openvswitch][:sdn_install_dir] %>/pox/pox.py inception \
-      --ip_prefix=192.168 log.level --DEBUG log --file=/tmp/pox.log
+    --ip_prefix=<%= node[:openvswitch][:ip_prefix] %> log.level \
+    --DEBUG log --file=/tmp/pox.log
 end script
 
 pre-stop script
   exec ps -ef | grep -i pox.py | grep -i python | \
-      awk '/root/{print $2}' | xargs kill -9
+    awk '/root/{print $2}' | xargs kill -9
 end script
 
 post-stop script
