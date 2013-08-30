@@ -6,3 +6,7 @@ default[:openvswitch][:init_file] = '/etc/init/openvswitch.conf'
 default[:openvswitch][:pid_dir] = '/var/run/openvswitch'
 default[:openvswitch][:mtu] = 1450 # a bit smaller than default 1500, 
                                    # to improve bandwidth performance
+default[:openvswitch][:sdn_install_dir] = '/opt/openvswitch_sdn'
+default[:openvswitch][:sdn_init_file] = '/etc/init/openvswitch_sdn.conf'
+default[:openvswitch][:sdn_repo] = 'https://github.com/att/pox.git'
+default[:openvswitch][:sdn_repo_branch] = 'master'
