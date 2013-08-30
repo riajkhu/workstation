@@ -41,33 +41,3 @@ node[:openvswitch][:vxlan_bridge_ids].each do |bridge_id|
     EOH
   end
 end
-
-# install SDN controller on the controller node and start service
-directory node[:openvswitch][:sdn_install_dir] do
-  owner "root"
-  group "root"
-  mode 00755
-end
-if node[:ipaddress] == controller_ip then
-  Chef::Log.info("install SDN controller on #{controller_ip}")  
-  if not File.exists?(node[:openvswitch][:sdn_init_file]) then
-    bash "install SDN controller" do
-      user "root"
-      cwd node[:openvswitch][:sdn_install_dir]
-      code <<-EOH
-        git clone -b #{node[:openvswitch][:sdn_repo_branch]} #{node[:openvswitch][:sdn_repo]}
-      EOH
-    end
-  end
-end
-template node[:openvswitch][:sdn_init_file] do
-  source "openvswitch_sdn.conf.erb"
-  owner "root"
-  group "root"
-  mode 00755
-end
-service "openvswitch_sdn" do
-  provider Chef::Provider::Service::Upstart
-  supports :status => true, :start => true, :stop => true
-  action [:enable, :start]
-end
