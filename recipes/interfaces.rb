@@ -1,5 +1,7 @@
 # setup /etc/network/interfaces and put eth interfaces into OVS
 
+include_recipe "openvswitch::gen-worker-ips"
+
 seq = 0
 node[:openvswitch][:vxlan_bridge_ids].each do |bridge_id|
   bridge_name = 'obr' + bridge_id.to_s # obr: Openvswitch BRidge

@@ -2,6 +2,8 @@
 hub = node[:openvswitch][:hub_name]
 hub_address = node[:openvswitch][:addresses][hub][0]  # 0: eth1 ops n/w
 
+include_recipe "openvswitch::gen-worker-ips"
+
 # I am the hub, do the following
 if node.name == hub then
   # install dnsmasq
