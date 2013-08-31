@@ -10,3 +10,6 @@ default[:openvswitch][:sdn_install_dir] = '/opt/openvswitch_sdn'
 default[:openvswitch][:sdn_init_file] = '/etc/init/openvswitch_sdn.conf'
 default[:openvswitch][:sdn_repo] = 'https://github.com/att/pox.git'
 default[:openvswitch][:sdn_repo_branch] = 'master'
+default[:openvswitch][:max_workers] = 251 # 256 (2**8) - 1 (.0) - 1
+                                          # (broadcast) - 3 (gateway,
+                                          # chefserver, controller)
