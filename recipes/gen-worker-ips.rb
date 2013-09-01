@@ -16,8 +16,7 @@ for i in 1..node[:openvswitch][:max_workers]
   ip_1 = ip_prefix_1 + (i + 3).to_s()
   ip_2 = ip_prefix_2 + '0'
   ip_3 = ip_prefix_3 + (i + 3).to_s()
-  if name == node.name then
-    node.set[:openvswitch][:addresses][name] = [ip_1, ip_2, ip_3]
-    Chef::Log.info("node_addresses=#{node[:openvswitch][:addresses][name]}")
-  end
+  node.set[:openvswitch][:addresses][name] = [ip_1, ip_2, ip_3]
 end
+
+Chef::Log.info("node_addresses=#{node[:openvswitch][:addresses][node.name]}")
